@@ -4,34 +4,28 @@ using UnityEngine;
 
 public class RotatingPlatform : Interactable {
 
+    public Quaternion hey;
     public float deltaRotation;
     public float deltaLimit;
     public float deltaReduce;
     float previousRotation;
     float currentRotation;
 
-    void Start()
+    public override void Start()
     {
-
-    }
-
-    public override void OnMouseDown()
-    {
-        deltaRotation = 0f;
-        previousRotation = angleBetweenPoints(transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition));
-        base.OnMouseDown();
+        base.Start();
     }
 
     public override void Function()
     {
-        currentRotation = angleBetweenPoints(transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition));
-        deltaRotation = Mathf.DeltaAngle(currentRotation, previousRotation);
-        if (Mathf.Abs(deltaRotation) > deltaLimit)
-        {
-            deltaRotation = deltaLimit * Mathf.Sign(deltaRotation);
-        }
-        previousRotation = currentRotation;
-        transform.Rotate(Vector3.back * Time.deltaTime, deltaRotation);
+        //currentRotation = angleBetweenPoints(transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition));
+        //deltaRotation = Mathf.DeltaAngle(currentRotation, previousRotation);
+        //if (Mathf.Abs(deltaRotation) > deltaLimit)
+        //{
+        //    deltaRotation = deltaLimit * Mathf.Sign(deltaRotation);
+        //}
+        //previousRotation = currentRotation;
+        //transform.Rotate(Vector3.back * Time.deltaTime, deltaRotation);
     }
 
 
