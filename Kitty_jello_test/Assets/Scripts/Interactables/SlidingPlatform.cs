@@ -4,12 +4,16 @@ using UnityEngine;
 
 public class SlidingPlatform : Interactable {
 
-    public Vector3 maxPos;
-    public Vector3 minPos;
+    public float max;
+    public float min;
+    Vector3 minPos;
+    Vector3 maxPos;
   
     // Use this for initialization
     public override void Start()
     {
+        minPos = new Vector3(min, transform.position.y, transform.position.z);
+        maxPos = new Vector3(max, transform.position.y, transform.position.z);
         base.Start();
     }
 
