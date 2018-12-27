@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Interactable : MonoBehaviour {
+public abstract class Interactable : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
@@ -15,10 +15,7 @@ public class Interactable : MonoBehaviour {
 		
 	}
 
-    public virtual void Function()
-    {
-
-    }
+    public abstract void Function();
 
     public virtual void OnMouseDown()
     {

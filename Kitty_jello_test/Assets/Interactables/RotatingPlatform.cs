@@ -32,8 +32,6 @@ public class RotatingPlatform : Interactable {
         }
         previousRotation = currentRotation;
         transform.Rotate(Vector3.back * Time.deltaTime, deltaRotation);
-        Debug.Log("Should be rotating");
-        base.Function();
     }
 
 
