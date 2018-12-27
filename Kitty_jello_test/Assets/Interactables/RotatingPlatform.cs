@@ -4,77 +4,76 @@ using UnityEngine;
 
 public class RotatingPlatform : Interactable {
 
-    Vector3 startPos;
-    Vector3 InitPos;
-    Vector3 offset;
-    public bool Horizontal;
-    public float distance;
-    float min;
-    float max;
+    public float deltaRotation;
+    public float deltaLimit;
+    public float deltaReduce;
+    float previousRotation;
+    float currentRotation;
 
-    // Use this for initialization
     void Start()
     {
-        startPos = transform.position;
-        if (Horizontal)
-        {
-            min = startPos.x - distance;
-            max = startPos.x + distance;
-        }
-        else
-        {
-            min = startPos.y - distance;
-            max = startPos.y + distance;
-        }
+
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void OnMouseDown()
     {
-
+        deltaRotation = 0f;
+        previousRotation = angleBetweenPoints(transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition));
+        base.OnMouseDown();
     }
 
     public override void Function()
     {
-        Vector3 curScreenPoint = Vector3.zero;
-        if (Horizontal)
+        currentRotation = angleBetweenPoints(transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition));
+        deltaRotation = Mathf.DeltaAngle(currentRotation, previousRotation);
+        if (Mathf.Abs(deltaRotation) > deltaLimit)
         {
-            curScreenPoint = new Vector3(Input.mousePosition.x, 0, InitPos.z);
-            if (transform.position.x > min && transform.position.x < max)
-            {
-                Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
-                if (curPosition.x < max && curPosition.x > min)
-                {
-                    transform.position = curPosition;
-                }
-            }
+            deltaRotation = deltaLimit * Mathf.Sign(deltaRotation);
         }
-        else
-        {
-            curScreenPoint = new Vector3(0, Input.mousePosition.y, InitPos.z);
-            if (transform.position.y > min && transform.position.y < max)
-            {
-                Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
-                if (curPosition.y < max && curPosition.y > min)
-                {
-                    transform.position = curPosition;
-                }
-            }
-        }
-
+        previousRotation = currentRotation;
+        transform.Rotate(Vector3.back * Time.deltaTime, deltaRotation);
+        Debug.Log("Should be rotating");
+        base.Function();
     }
-    public override void OnMouseDown()
+
+
+    void Update()
     {
-        InitPos = Camera.main.WorldToScreenPoint(gameObject.transform.position);
-        if (Horizontal)
-        {
-            offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, 0, InitPos.z));
-        }
-        else
-        {
-            offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(0, Input.mousePosition.y, InitPos.z));
-        }
-        base.OnMouseDown();
+        //else if (Input.GetMouseButton(0))
+        //{
+        //    currentRotation = angleBetweenPoints(transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition));
+        //    deltaRotation = Mathf.DeltaAngle(currentRotation, previousRotation);
+        //    if (Mathf.Abs(deltaRotation) > deltaLimit)
+        //    {
+        //        deltaRotation = deltaLimit * Mathf.Sign(deltaRotation);
+        //    }
+        //    previousRotation = currentRotation;
+        //    transform.Rotate(Vector3.back * Time.deltaTime, deltaRotation);
+        //    Debug.Log("Should be rotating");
+        //}
+        //else
+        //{
+        //    transform.Rotate(Vector3.back * Time.deltaTime, deltaRotation);
+        //    deltaRotation = Mathf.Lerp(deltaRotation, 0, deltaReduce * Time.deltaTime);
+        //}
+
     }
 
+    float angleBetweenPoints(Vector2 position1, Vector2 position2)
+    {
+        Vector2 fromLine = position2 - position1;
+        Vector2 toLine = new Vector2(1, 0);
+
+        float angle = Vector2.Angle(fromLine, toLine);
+
+        Vector3 cross = Vector3.Cross(fromLine, toLine);
+
+        // did we wrap around?
+        if (cross.z > 0)
+        {
+            angle = 360f - angle;
+        }
+
+        return angle;
+    }
 }
